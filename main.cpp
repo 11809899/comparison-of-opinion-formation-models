@@ -6,9 +6,9 @@
 #include <unordered_map>
 #include <string>
 #include <utility>
-#include "project_utils.h"
-#include "interventions.h"
-#include "models.h"
+#include "src/project_utils.h"
+#include "src/interventions.h"
+#include "src/models.h"
 
 /**
  * @brief Executes the edge intervention procedure on a given dataset.
@@ -23,10 +23,26 @@
  * @param epsilon        Optional parameter for the "BC" model (ignored for "FJ").
  */
 
-void run_on_dataset(const std::string& dataset_path, const std::string& output_path, const std::string& model, double epsilon = NULL) {
+void run_on_dataset(const std::string& dataset_path, const std::string& output_path, const std::string& model, double epsilon = 0.0) {
+    std::string directory = "";
+    if (dataset_path == "BAG_10" or dataset_path == "BAG_20" or dataset_path == "BAG_30"){
+        directory = "Barabasi-Albert Graphs";
+    } else if (dataset_path == "SBM_low_cohesion" or dataset_path == "SBM_high_cohesion"){
+        directory = "Stochastic Block Model";
+    } else if (dataset_path == "twitter_large"){
+        directory = "Twitter Large";
+    } else if (dataset_path == "reddit"){
+        directory = "Reddit";
+    } else if (dataset_path == "flixster"){
+        directory = "Flixster Graph";
+    } else {
+        std::cerr << "Error: Dataset not supported.\n";
+    }
+
+
     // 1. Load edge list and opinion data
-    auto edgelist = read_edgelist_txt(dataset_path + ".edgelist");           // deine Funktion
-    auto opinions = read_opinions_csv("opinion_" + dataset_path + ".csv"); // Beispiel
+    auto edgelist = read_edgelist_txt("data/graphs/"+ directory + "/" + dataset_path + ".edgelist");
+    auto opinions = read_opinions_csv("data/graphs/"+ directory + "/" + "opinion_" + dataset_path + ".csv");
 
     // Special handling for pre-defined datasets using reduced search space
     if (dataset_path == "twitter_large") {
@@ -62,11 +78,11 @@ void run_on_dataset(const std::string& dataset_path, const std::string& output_p
                 double c_directed = 2 * avg_deg_directed;
 
                 // Run full search space for undirected graph
-                auto edges_undirected = find_k_edges_full_search_space(edgelist, opinions, k, true, model, NULL, c_undirected);
+                auto edges_undirected = find_k_edges_full_search_space(edgelist, opinions, k, true, model, 0.0, c_undirected);
                 write_edgelist_to_csv(edges_undirected, output_path + "_FJ_undirected.csv");
 
                 // ... and for directed graph
-                auto edges_directed = find_k_edges_full_search_space(edgelist, opinions, k, false, model, NULL, c_directed);
+                auto edges_directed = find_k_edges_full_search_space(edgelist, opinions, k, false, model, 0.0, c_directed);
                 write_edgelist_to_csv(edges_directed, output_path + "_FJ_directed.csv");
             } else if (model == "BC") {
                 // BC model does not require c parameter
