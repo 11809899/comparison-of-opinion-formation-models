@@ -53,6 +53,7 @@ Each line defines a directed edge in the format: `source_node target_node`
 ## Configuration
 The BC-Model accepts the confidence threshold ε as a parameter and the FJ-Model accepts the stubbornness constant c.
 You can modify the stubbornness constant c directly in the code (e.g., main.cpp) and pass ε via command line.
+
 ---
 ## Citation
 
@@ -61,6 +62,7 @@ If you use this code or reproduce results in an academic context, please cite:
 
 Stonek, Anna: Assessing the Impact of Interventions in Different Opinion Formation Models. - 
 Master's Thesis, TU Wien, 2025.
+
 ---
 ## Contact
 
